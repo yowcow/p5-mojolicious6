@@ -6,9 +6,9 @@ perl:
   - "5.20"
   - "5.22"
 
-before_script:
+install:
   - cpanm Carton
+  - make
 
 script:
-  - make
   - make test
