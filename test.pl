@@ -1,7 +1,6 @@
 use common::sense;
 use Data::Dumper;
 use Encode ();
-use JSON::XS qw(decode_json);
 use Mojo::Util qw(monkey_patch);
 use Mojolicious::Lite;
 use Test::Deep;
