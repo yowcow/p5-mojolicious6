@@ -7,7 +7,6 @@ perl:
   - "5.22"
 
 before_script:
-  - curl -L https://cpanmin.us | perl - App::cpanminus
   - cpanm Carton
 
 script:
