@@ -38,11 +38,13 @@ $r->get('/')->to(
     }
 );
 
-$r->get('/something')->to(cb => sub {
-    my $c = shift;
-    $c->stash->{message} = '<script>';
-    $c->render('something');
-});
+$r->get('/something')->to(
+    cb => sub {
+        my $c = shift;
+        $c->stash->{message} = '<script>';
+        $c->render('something');
+    }
+);
 
 my $item_r = $r->under('/item/:item_id')->to(
     cb => sub {
@@ -88,6 +90,31 @@ $even_item_r->get('/')->to(
     }
 );
 
+#
+# Multiple "under"
+#
+$r->under('/under_path')->to(
+    cb => sub {
+        warn '1st "under" callback';
+        1;
+    }
+    )->under->to(
+    cb => sub {
+        warn '2nd "under" callback';
+        1;
+    }
+    )->under->to(
+    cb => sub {
+        warn '3rd "under" callback';
+        1;
+    }
+    )->get('/')->to(
+    cb => sub {
+        my $c = shift;
+        $c->render(json => { message => 'Dispatched after 3 nested "under" callbacks' });
+    }
+    );
+
 my $t = Test::Mojo->new;
 
 #
@@ -129,6 +156,10 @@ subtest 'GET /item/:item_id' => sub {
             }
         );
     };
+};
+
+subtest 'GET /under_path' => sub {
+    $t->get_ok('/under_path')->status_is(200)->json_is({ message => 'Dispatched after 3 nested "under" callbacks' });
 };
 
 done_testing;
